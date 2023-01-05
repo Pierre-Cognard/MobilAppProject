@@ -4,7 +4,6 @@
     <string name="API_KEY">7d127856d20d4cfd830aca5f42dfa305</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
-
     <!-- Login Activity -->
     <string name="hint_password">Password</string>
     <string name="login">Login</string>
@@ -18,14 +17,13 @@
     <string name="registration_successful">Successfully registered !</string>
     <string name="login_error">Incorrect email or password</string>
     <string name="register_error">Error while registering</string>
+    <string name="logo_description">App logo</string>
 
     <!-- News Activity -->
     <string name="hint_keyword">Keyword</string>
     <string name="info">Swipe right or left</string>
     <string name="welcome">Welcome</string>
     <string name="guest">Guest</string>
-
-
 
     <!-- Settings Activity -->
     <string name="settings">Settings</string>
@@ -55,6 +53,8 @@
         <item>Perl</item>
     </string-array>
 
+
+    <string name="image_description">News Image</string>
 
 
     <!-- Strings used for fragments for navigation -->
