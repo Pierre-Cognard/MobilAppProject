@@ -1,8 +1,8 @@
 package com.example.newsswipe.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -30,6 +30,9 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+
         val list : MutableList<String> = mDatabase.listKeywords()
         val appLanguageButton = findViewById<Button>(R.id.app_language_button)
 
@@ -42,6 +45,12 @@ class SettingsActivity : AppCompatActivity() {
         val languageAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,listLanguage)
         spinner.adapter = languageAdapter
 
+        when(prefs.getString("News_language",null)){
+            "en" -> spinner.setSelection(0)
+            "fr" -> spinner.setSelection(1)
+            "es" -> spinner.setSelection(2)
+        }
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -49,13 +58,15 @@ class SettingsActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                Log.i("Settings", listLanguage[position])
+                when(listLanguage[position]){
+                    "English" -> editor.putString("News_language","en").apply()
+                    "French" -> editor.putString("News_language","fr").apply()
+                    "Spanish" -> editor.putString("News_language","es").apply()
+                }
             }
-
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                Log.i("Settings", "rien de selection")
+                Log.i("Settings", "no selection")
             }
-
         }
 
         val recyclerView = findViewById<View>(R.id.keyword_recycler_view) as RecyclerView
@@ -80,10 +91,7 @@ class SettingsActivity : AppCompatActivity() {
 
         appLanguageButton.setOnClickListener {
             Log.i("Settings", "App Language")
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"))
-            startActivity(browserIntent)
         }
-
 
         list.clear()
         for (elem in mDatabase.findKeywords(user)) list.add(0,elem)

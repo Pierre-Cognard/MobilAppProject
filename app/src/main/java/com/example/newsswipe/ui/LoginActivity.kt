@@ -1,8 +1,10 @@
 package com.example.newsswipe.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -19,6 +21,13 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+        editor.putString("News_language","en").apply()
+
+        Log.d("test", prefs.getString("News_language",null).toString())
+
 
         if (mAuth.currentUser != null){
             val intent = Intent(this, NewsActivity::class.java)

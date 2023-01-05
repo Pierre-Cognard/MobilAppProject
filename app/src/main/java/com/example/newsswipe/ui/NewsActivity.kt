@@ -1,5 +1,6 @@
 package com.example.newsswipe.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -74,9 +75,11 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
             listNews.add(News("You must first add keywords in the settings to see news","null","null","null","https://i.postimg.cc/8zJqXQqy/logo.png"))
         }
         else {
+            val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
+            val language = prefs.getString("News_language",null)
             for (word in keywordsList) {
                 val request = Ion.with(this)
-                    .load("https://newsapi.org/v2/everything?apiKey=7d127856d20d4cfd830aca5f42dfa305&pageSize=5&language=fr&q=$word")
+                    .load("https://newsapi.org/v2/everything?apiKey=7d127856d20d4cfd830aca5f42dfa305&pageSize=5&language=$language&q=$word")
                     .setHeader("Accept", "application/json")
                     .setHeader("User-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
                     .asString()
