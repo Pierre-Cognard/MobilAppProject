@@ -2,14 +2,13 @@ package com.example.newsswipe.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsswipe.R
@@ -33,10 +32,31 @@ class SettingsActivity : AppCompatActivity() {
 
         val list : MutableList<String> = mDatabase.listKeywords()
         val appLanguageButton = findViewById<Button>(R.id.app_language_button)
-        val newsLanguageButton = findViewById<Button>(R.id.news_language_button)
+
         val addKeywordButton = findViewById<Button>(R.id.add_keyword_button)
         val backButton = findViewById<Button>(R.id.back_button)
         val keyword = findViewById<TextView>(R.id.keyword)
+
+        val spinner = findViewById<Spinner>(R.id.spinner)
+        val listLanguage = arrayOf("English","French","Spanish")
+        val languageAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,listLanguage)
+        spinner.adapter = languageAdapter
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                Log.i("Settings", listLanguage[position])
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                Log.i("Settings", "rien de selection")
+            }
+
+        }
 
         val recyclerView = findViewById<View>(R.id.keyword_recycler_view) as RecyclerView
         val mAdapter = KeywordAdapter(list,mDatabase,this)
@@ -60,14 +80,15 @@ class SettingsActivity : AppCompatActivity() {
 
         appLanguageButton.setOnClickListener {
             Log.i("Settings", "App Language")
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"))
+            startActivity(browserIntent)
         }
 
-        newsLanguageButton.setOnClickListener {
-            Log.i("Settings", "News Language")
-        }
+
         list.clear()
         for (elem in mDatabase.findKeywords(user)) list.add(0,elem)
         mAdapter.notifyDataSetChanged()
+
     }
 
     private fun hideKeyboard() { //function to hide the keyboard

@@ -39,7 +39,7 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
         val keywordsList : MutableList<String> = mDatabase.findKeywords(user)
         val articles : MutableList<News> = newsAPI(keywordsList)
 
-        val mAdapter = NewsAdapter(articles)
+        val mAdapter = NewsAdapter(articles,this)
 
         cardStackView.layoutManager = manager
         cardStackView.adapter = mAdapter
@@ -71,12 +71,12 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
 
         if (keywordsList.isEmpty()){
             Log.d("API", "pas de keyword")
-            listNews.add(News("You need to add keywords in settings","null","null","null","https://i.postimg.cc/8zJqXQqy/logo.png"))
+            listNews.add(News("You must first add keywords in the settings to see news","null","null","null","https://i.postimg.cc/8zJqXQqy/logo.png"))
         }
         else {
             for (word in keywordsList) {
                 val request = Ion.with(this)
-                    .load("https://newsapi.org/v2/everything?apiKey=7d127856d20d4cfd830aca5f42dfa305&pageSize=5&q=$word")
+                    .load("https://newsapi.org/v2/everything?apiKey=7d127856d20d4cfd830aca5f42dfa305&pageSize=5&language=fr&q=$word")
                     .setHeader("Accept", "application/json")
                     .setHeader("User-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
                     .asString()
