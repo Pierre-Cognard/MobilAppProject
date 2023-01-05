@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "433845222823",
+    "project_id": "newsswipe-63c7c",
+    "storage_bucket": "newsswipe-63c7c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433845222823:android:961fd8b600b91f71834a82",
+        "android_client_info": {
+          "package_name": "com.example.newsswipe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "433845222823-qp18jevu3cmtu5h57glej0kj9hel28rp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBshHXjYrACRZADGgmovGA0KAq7FksYowM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "433845222823-qp18jevu3cmtu5h57glej0kj9hel28rp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
