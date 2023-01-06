@@ -21,7 +21,6 @@ import java.util.Locale
 
 
 class SettingsActivity : AppCompatActivity() {
-
     private val mDatabase = SqliteDatabase(this)
     private val mAuth = FirebaseAuth.getInstance()
     private val user = if(mAuth.currentUser != null){mAuth.currentUser?.email.toString()} else{"guest"}
@@ -29,13 +28,10 @@ class SettingsActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_settings)
 
-        val listLanguage = arrayOf("English","French","Spanish")
-
         val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
-        val editor = prefs.edit()
+        val listLanguage: Array<String> =  resources.getStringArray(R.array.languages)
 
         val list : MutableList<String> = mDatabase.listKeywords()
 
@@ -47,7 +43,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val addKeywordButton = findViewById<Button>(R.id.add_keyword_button)
         val backButton = findViewById<Button>(R.id.back_button)
-        val keyword = findViewById<TextView>(R.id.keyword)
+        val keywordInput = findViewById<TextView>(R.id.keyword)
 
         val recyclerView = findViewById<View>(R.id.keyword_recycler_view) as RecyclerView
         val mAdapter = KeywordAdapter(list,mDatabase,this)
@@ -56,10 +52,10 @@ class SettingsActivity : AppCompatActivity() {
         recyclerView.adapter = mAdapter
 
         addKeywordButton.setOnClickListener {
-            if (keyword.text.toString() == "") Toast.makeText(this, getString(R.string.error_empty_keyword), Toast.LENGTH_SHORT).show() // test if the TextView is empty
-            else if (list.contains(keyword.text.toString())) Toast.makeText(this, getString(R.string.error_keyword_already_exist), Toast.LENGTH_SHORT).show() // test if the keyword already exists
-            else mAdapter.addKeyword(keyword.text.toString())
-            keyword.text = ""
+            if (keywordInput.text.toString() == "") Toast.makeText(this, getString(R.string.error_empty_keyword), Toast.LENGTH_SHORT).show() // test if the TextView is empty
+            else if (list.contains(keywordInput.text.toString())) Toast.makeText(this, getString(R.string.error_keyword_already_exist), Toast.LENGTH_SHORT).show() // test if the keyword already exists
+            else mAdapter.addKeyword(keywordInput.text.toString())
+            keywordInput.text = ""
             hideKeyboard()
         }
 
@@ -70,32 +66,22 @@ class SettingsActivity : AppCompatActivity() {
 
         var appChecked = 0
         when(prefs.getString("App_language",null)){
-            "en" -> {
-                appLanguageText.text = listLanguage[0]
-                appChecked = 0
-            }
-            "fr" -> {
-                appLanguageText.text = listLanguage[1]
-                appChecked = 1
-            }
-            "es" -> {
-                appLanguageText.text = listLanguage[2]
-                appChecked = 2
-            }
+            "en" -> appChecked = 0
+            "fr" -> appChecked = 1
+            "es" -> appChecked = 2
         }
+        appLanguageText.text = listLanguage[appChecked]
 
         appLanguageButton.setOnClickListener {
             Log.i("Settings", "App Language")
             val mBuilder = AlertDialog.Builder(this)
             mBuilder.setTitle("Choose App Language")
             //val checked =
-            mBuilder.setSingleChoiceItems(R.array.languages, appChecked) { dialog, which ->
-                if (which == 0) {
-                    setLocal("en")
-                } else if (which == 1) {
-                    setLocal("fr")
-                } else if (which == 2) {
-                    setLocal("es")
+            mBuilder.setSingleChoiceItems(R.array.languages, appChecked) { dialog, language ->
+                when(language){
+                    0 -> setAppLanguage("en")
+                    1 -> setAppLanguage("fr")
+                    2 -> setAppLanguage("es")
                 }
                 dialog.dismiss()
             }
@@ -120,27 +106,20 @@ class SettingsActivity : AppCompatActivity() {
             Log.i("Settings", "News Language")
             val mBuilder = AlertDialog.Builder(this)
             mBuilder.setTitle("Choose News Language")
-            mBuilder.setSingleChoiceItems(listLanguage, newsChecked) { dialog, which ->
-                if (which == 0) {
-                    editor.putString("News_language","en").apply()
-                    newsLanguageText.text = listLanguage[0]
-                } else if (which == 1) {
-                    editor.putString("News_language","fr").apply()
-                    newsLanguageText.text = listLanguage[1]
-                } else if (which == 2) {
-                    editor.putString("News_language","es").apply()
-                    newsLanguageText.text = listLanguage[2]
+            mBuilder.setSingleChoiceItems(listLanguage, newsChecked) { dialog, language ->
+                when(language){
+                    0 -> setNewsLanguage("en",0)
+                    1 -> setNewsLanguage("fr",1)
+                    2 -> setNewsLanguage("es",2)
                 }
                 dialog.dismiss()
             }
             val mDialog = mBuilder.create()
             mDialog.show()
         }
-
         list.clear()
         for (elem in mDatabase.findKeywords(user)) list.add(0,elem)
         mAdapter.notifyDataSetChanged()
-
     }
 
     private fun hideKeyboard() { //function to hide the keyboard
@@ -152,22 +131,26 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun setLocal(language: String){ //function to change application language
-        Log.i("test", language)
+    private fun setAppLanguage(language: String){ //function to change application language
+        val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
+        prefs.edit().putString("App_language",language).apply()
+
         val local = Locale(language)
         Locale.setDefault(local)
-        val res = this.resources
+        val res = resources
         val conf = Configuration()
         conf.setLocale(local)
         res.updateConfiguration(conf,res.displayMetrics)
-        Log.i("test", "REFRESH")
+        startActivity(Intent(this,SettingsActivity::class.java))
+    }
 
+    private fun setNewsLanguage(language: String, position: Int){
         val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
-        val editor = prefs.edit()
-        editor.putString("App_language",language).apply()
+        prefs.edit().putString("News_language",language).apply()
 
-        val refresh = Intent(this,SettingsActivity::class.java)
-        startActivity(refresh)
+        val listLanguage: Array<String> =  resources.getStringArray(R.array.languages)
+        val newsLanguageText = findViewById<TextView>(R.id.current_news_language)
+        newsLanguageText.text = listLanguage[position]
     }
 
 }

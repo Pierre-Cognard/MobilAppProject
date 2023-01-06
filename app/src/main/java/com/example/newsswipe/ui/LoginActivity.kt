@@ -23,9 +23,9 @@ class LoginActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
         val editor = prefs.edit()
-        editor.putString("News_language","en").apply()
-        editor.putString("App_language","en").apply()
 
+        if (prefs.getString("App_language",null) == null) editor.putString("App_language","en").apply()
+        if (prefs.getString("News_language",null) == null) editor.putString("App_language","en").apply()
 
         if (mAuth.currentUser != null){
             val intent = Intent(this, NewsActivity::class.java)
