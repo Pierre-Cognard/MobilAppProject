@@ -63,10 +63,6 @@ class NewsAdapter(private val newsList: MutableList<News>, private val context: 
             .placeholder(circularProgressDrawable)
             .error(R.drawable.error)
             .into(holder.image)
-
-
-
-
     }
 
     override fun getItemCount(): Int {

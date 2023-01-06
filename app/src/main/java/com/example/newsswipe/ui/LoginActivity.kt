@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -25,8 +24,7 @@ class LoginActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
         val editor = prefs.edit()
         editor.putString("News_language","en").apply()
-
-        Log.d("test", prefs.getString("News_language",null).toString())
+        editor.putString("App_language","en").apply()
 
 
         if (mAuth.currentUser != null){
@@ -47,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
 
         loginButton.setOnClickListener{
             if(email.text.isNullOrBlank()||password.text.isNullOrBlank()){
-                Toast.makeText(this,getString(R.string.try_login_without_full_informations),Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,getString(R.string.try_login_without_full_information),Toast.LENGTH_SHORT).show()
             }
             else{
                 mAuth.signInWithEmailAndPassword(email.text.toString(),password.text.toString()).addOnCompleteListener(this) { task ->
@@ -69,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
 
         registerButton.setOnClickListener{
             if(email.text.isNullOrBlank()||password.text.isNullOrBlank()){
-                Toast.makeText(this,getString(R.string.try_login_without_full_informations),Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,getString(R.string.try_login_without_full_information),Toast.LENGTH_SHORT).show()
             }
             else {
                 if (mAuth.currentUser != null) {

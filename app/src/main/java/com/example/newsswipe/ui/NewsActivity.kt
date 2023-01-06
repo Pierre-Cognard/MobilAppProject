@@ -39,7 +39,7 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
 
         val keywordsList : MutableList<String> = mDatabase.findKeywords(user)
         val articles : MutableList<News> = newsAPI(keywordsList)
-
+        Log.i("Settings", articles.toString())
         val mAdapter = NewsAdapter(articles,this)
 
         cardStackView.layoutManager = manager
@@ -72,7 +72,7 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
 
         if (keywordsList.isEmpty()){
             Log.d("API", "pas de keyword")
-            listNews.add(News("You must first add keywords in the settings to see news","null","null","null","https://i.postimg.cc/8zJqXQqy/logo.png"))
+            listNews.add(News(getString(R.string.no_keywords),"null","null","null","https://i.postimg.cc/8zJqXQqy/logo.png"))
         }
         else {
             val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)

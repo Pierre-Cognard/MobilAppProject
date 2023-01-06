@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- General -->
+    <string name="app_name">NewsSwipe</string>
+    <string name="API_KEY">7d127856d20d4cfd830aca5f42dfa305</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Login Activity -->
+    <string name="hint_password">Mot de passe</string>
+    <string name="login">Se connecter</string>
+    <string name="logout">Se déconnecter</string>
+    <string name="Create_account_text">Créer un compte</string>
+    <string name="hint_email">Email</string>
+    <string name="guest_text">Continuer en tant qu\'invité</string>
+    <string name="try_login_without_full_information">Veuillez remplir tous les champs !</string>
+    <string name="register_while_logged_in">Vous devez vous déconnecter avant de créer un compte !</string>
+    <string name="login_successful">Connexion réussie !</string>
+    <string name="registration_successful">Enregistrement réussi !</string>
+    <string name="login_error">Email ou mot de passe incorrect</string>
+    <string name="register_error">Erreur lors de l\'enregistrement</string>
+    <string name="logo_description">App logo</string>
+
+    <!-- News Activity -->
+    <string name="hint_keyword">Mot clé</string>
+    <string name="info">Swipe right or left</string>
+    <string name="welcome">Bienvenue</string>
+    <string name="guest">Invité</string>
+    <string name="image_description">News Image</string>
+    <string name="no_keywords">Vous devez d\'abord ajouter des mots-clés dans les paramètres pour voir les actualités.</string>
+
+    <!-- Settings Activity -->
+    <string name="settings">Réglages</string>
+    <string name="application_language">Langue de l\'application</string>
+    <string name="news_language">Langue des actualités</string>
+    <string name="add_keyword">Ajouter le mot clé</string>
+    <string name="back_button">Retour</string>
+
+    <string name="error_empty_keyword">Erreur, vous devez écrire un mot clé avant !</string>
+    <string name="error_keyword_already_exist">Ce mot-clé est déjà dans la liste !</string>
+
+    <string name="keyword_add_error">Erreur lors de l\'ajout du mot-clé</string>
+    <string name="keyword_add_success">Mot clé ajouté avec succès</string>
+
+    <string name="keyword_delete_error">Erreur lors de la suppression du mot-clé</string>
+    <string name="keyword_delete_success">Mot clé supprimé avec succès</string>
+
+    <string name="notification_description">Notification</string>
+    <string name="delete_description">Supprimer</string>
+
+    <string-array name="languages">
+        <item>Anglais</item>
+        <item>Francais</item>
+        <item>Espagnol</item>
+    </string-array>
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="selected_item" />
+</resources>

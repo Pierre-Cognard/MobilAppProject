@@ -73,7 +73,7 @@
 
     <Button
         android:id="@+id/logout_button"
-        android:layout_width="95dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:backgroundTint="@color/blue_button_dark"
         android:textAllCaps="false"
