@@ -10,10 +10,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsswipe.R
-import com.example.newsswipe.database.SqliteDatabase
+import com.example.newsswipe.database.DatabaseKeywords
 import com.google.firebase.auth.FirebaseAuth
 
-class KeywordAdapter(private val list: MutableList<String>,private val database: SqliteDatabase, private val context: Context) : RecyclerView.Adapter<KeywordAdapter.ViewHolder>() {
+class KeywordAdapter(private val list: MutableList<String>, private val database: DatabaseKeywords, private val context: Context) : RecyclerView.Adapter<KeywordAdapter.ViewHolder>() {
 
     private val mAuth = FirebaseAuth.getInstance()
     private val user = if(mAuth.currentUser != null){mAuth.currentUser?.email.toString()} else{"guest"}

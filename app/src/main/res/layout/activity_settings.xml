@@ -111,7 +111,7 @@
 
 
     <EditText
-        android:id="@+id/keyword"
+        android:id="@+id/keyword_input"
         android:layout_width="343dp"
         android:layout_height="60dp"
         android:background="@color/bg_button"
@@ -140,7 +140,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/keyword"
+        app:layout_constraintTop_toBottomOf="@+id/keyword_input"
         app:layout_constraintVertical_bias="0.0" />
 
     <androidx.recyclerview.widget.RecyclerView

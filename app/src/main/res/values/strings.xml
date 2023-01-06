@@ -53,10 +53,11 @@
     </string-array>
 
     <string name="share_text">Hey! You have to see this news : </string>
+    <string name="nothing_to_share">Nothing to share</string>
 
 
-
-
+    <!-- Bookmarks Activity -->
+    <string name="my_bookmarks">My bookmarks</string>
 
 
     <!-- Strings used for fragments for navigation -->

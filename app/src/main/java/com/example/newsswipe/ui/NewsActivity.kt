@@ -7,10 +7,12 @@ import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newsswipe.R
-import com.example.newsswipe.database.SqliteDatabase
+import com.example.newsswipe.database.DatabaseKeywords
 import com.example.newsswipe.models.News
 import com.example.newsswipe.ui.adapter.NewsAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -24,7 +26,7 @@ import org.json.JSONObject
 class NewsActivity : AppCompatActivity(), CardStackListener {
 
     private var mAuth = FirebaseAuth.getInstance()
-    private val mDatabase = SqliteDatabase(this)
+    private val mDatabase = DatabaseKeywords(this)
     private val user = if(mAuth.currentUser != null){mAuth.currentUser?.email.toString()} else{"guest"}
 
     private lateinit var articles : MutableList<News>
@@ -33,8 +35,9 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news)
 
-        val settingsButton = findViewById<Button>(R.id.settings_button)
+        val settingsButton = findViewById<ImageButton>(R.id.settings_button)
         val logoutButton = findViewById<Button>(R.id.logout_button)
+        val bookmarksButton = findViewById<Button>(R.id.bookmarks_button)
         val username = findViewById<TextView>(R.id.username)
 
         val cardStackView = findViewById<CardStackView>(R.id.card_stack_view)
@@ -70,6 +73,10 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
             startActivity(intent)
         }
 
+        bookmarksButton.setOnClickListener {
+            val intent = Intent(this, BookmarksActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 
@@ -157,17 +164,33 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
     }
 
     override fun onCardDisappeared(view: View?, position: Int) {
-        Log.d("CardStackView","card disappear")
+        Log.d("CardStackView","card disappear $position")
+
+        if (position == articles.lastIndex){
+            setupShareButton(-1)
+        }
+
     }
 
     private fun setupShareButton(position: Int){
         val shareButton = findViewById<FloatingActionButton>(R.id.share_button)
-        shareButton.setOnClickListener{
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.putExtra(Intent.EXTRA_TITLE, articles[position].title)
-            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text).plus(articles[position].url))
-            intent.type = "text/plain"
-            startActivity(Intent.createChooser(intent, "test"))
+
+        if (position != -1 && articles[position].url != "null") {
+            shareButton.setOnClickListener {
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.putExtra(Intent.EXTRA_TITLE, articles[position].title)
+                intent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    getString(R.string.share_text).plus(articles[position].url)
+                )
+                intent.type = "text/plain"
+                startActivity(Intent.createChooser(intent, "test"))
+            }
+        }
+        else{
+            shareButton.setOnClickListener {
+                Toast.makeText(this,getString(R.string.nothing_to_share), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

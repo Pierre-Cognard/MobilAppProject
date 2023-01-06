@@ -64,4 +64,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="selected_item" />
     <string name="share_text">Hey ! Tu dois voir cette actualité :</string>
+    <string name="my_bookmarks">Mes Favoris</string>
+    <string name="nothing_to_share">Rien à partager</string>
 </resources>
