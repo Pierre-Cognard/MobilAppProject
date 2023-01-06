@@ -28,6 +28,8 @@ class NewsAdapter(private val newsList: MutableList<News>, private val context: 
     @SuppressLint("SimpleDateFormat", "UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+
+
         if (newsList[position].url != "null") {
             holder.card.setOnClickListener {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(newsList[position].url))
@@ -76,6 +78,8 @@ class NewsAdapter(private val newsList: MutableList<News>, private val context: 
         var date = view.findViewById(R.id.date) as TextView
         var image = view.findViewById(R.id.image) as ImageView
         var card = view.findViewById(R.id.card) as CardView
+
+        //var shareButton: FloatingActionButton = view.findViewById(R.id.share_button)
 
         override fun onClick(v: View?) {
 

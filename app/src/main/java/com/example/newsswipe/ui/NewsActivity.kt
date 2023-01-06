@@ -13,6 +13,7 @@ import com.example.newsswipe.R
 import com.example.newsswipe.database.SqliteDatabase
 import com.example.newsswipe.models.News
 import com.example.newsswipe.ui.adapter.NewsAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.koushikdutta.ion.Ion
 import com.yuyakaido.android.cardstackview.*
@@ -26,6 +27,8 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
     private val mDatabase = SqliteDatabase(this)
     private val user = if(mAuth.currentUser != null){mAuth.currentUser?.email.toString()} else{"guest"}
 
+    private lateinit var articles : MutableList<News>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news)
@@ -38,7 +41,9 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
         val manager = CardStackLayoutManager(this,this)
 
         val keywordsList : MutableList<String> = mDatabase.findKeywords(user)
-        val articles : MutableList<News> = newsAPI(keywordsList)
+        articles = newsAPI(keywordsList)
+        //val articles : MutableList<News> = newsAPI(keywordsList)
+
         Log.i("Settings", articles.toString())
         val mAdapter = NewsAdapter(articles,this)
 
@@ -65,11 +70,11 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
             startActivity(intent)
         }
 
+
     }
 
     private fun newsAPI(keywordsList: MutableList<String>): MutableList<News> {
         val listNews = mutableListOf<News>()
-
         if (keywordsList.isEmpty()){
             Log.d("API", "pas de keyword")
             listNews.add(News(getString(R.string.no_keywords),"null","null","null","https://i.postimg.cc/8zJqXQqy/logo.png"))
@@ -111,7 +116,6 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
         return listNews
     }
 
-
     private fun init(manager: CardStackLayoutManager,keywordsList: MutableList<String>) {
         manager.setVisibleCount(3)
         manager.setTranslationInterval(8f)
@@ -124,17 +128,20 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
         manager.setStackFrom(StackFrom.Top)
         manager.setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
         manager.setOverlayInterpolator(LinearInterpolator())
-
-        if (keywordsList.isEmpty()) manager.setCanScrollHorizontal(false)
-
+        if (keywordsList.isEmpty()) manager.setCanScrollHorizontal(false) //No swipe
     }
 
     override fun onCardDragging(direction: Direction, ratio: Float) {
-        Log.d("CardStackView", "onCardDragging: d = ${direction.name}, r = $ratio")
+        //Log.d("CardStackView", "onCardDragging: d = ${direction.name}, r = $ratio")
     }
 
     override fun onCardSwiped(direction: Direction?) {
-        Log.d("CardStackView","card swiped")
+        Log.d("CardStackView",direction.toString())
+
+        if (direction.toString() == "Right"){
+            Log.d("CardStackView","SAVE NEWS")
+        }
+
     }
 
     override fun onCardRewound() {
@@ -146,11 +153,21 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
     }
 
     override fun onCardAppeared(view: View, position: Int) {
-        val textView = view.findViewById<TextView>(com.yuyakaido.android.cardstackview.R.id.title)
-        Log.d("CardStackView", "onCardAppeared: ($position) ${textView.text}")
+        setupShareButton(position)
     }
 
     override fun onCardDisappeared(view: View?, position: Int) {
         Log.d("CardStackView","card disappear")
+    }
+
+    private fun setupShareButton(position: Int){
+        val shareButton = findViewById<FloatingActionButton>(R.id.share_button)
+        shareButton.setOnClickListener{
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.putExtra(Intent.EXTRA_TITLE, articles[position].title)
+            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text).plus(articles[position].url))
+            intent.type = "text/plain"
+            startActivity(Intent.createChooser(intent, "test"))
+        }
     }
 }

@@ -18,7 +18,6 @@ class SqliteDatabase(context: Context) :
             onCreate(db)
         }
 
-
         fun listKeywords(): MutableList<String> {
             val sql = "select * from $TABLE_KEYWORDS"
             val db = this.readableDatabase
@@ -59,20 +58,18 @@ class SqliteDatabase(context: Context) :
             private const val COLUMN_USER = "user"
         }
 
-
-
-    fun findKeywords(user: String): MutableList<String> {
-        val sql = "select * from $TABLE_KEYWORDS where user = '$user'"
-        val db = this.readableDatabase
-        val storeKeywords = arrayListOf<String>()
-        val cursor = db.rawQuery(sql, null)
-        if (cursor.moveToFirst()) {
-            do {
-                val keyword = cursor.getString(1)
-                storeKeywords.add(keyword)
-            } while (cursor.moveToNext())
+        fun findKeywords(user: String): MutableList<String> {
+            val sql = "select * from $TABLE_KEYWORDS where user = '$user'"
+            val db = this.readableDatabase
+            val storeKeywords = arrayListOf<String>()
+            val cursor = db.rawQuery(sql, null)
+            if (cursor.moveToFirst()) {
+                do {
+                    val keyword = cursor.getString(1)
+                    storeKeywords.add(keyword)
+                } while (cursor.moveToNext())
+            }
+            cursor.close()
+            return storeKeywords
         }
-        cursor.close()
-        return storeKeywords
-    }
     }

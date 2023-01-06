@@ -21,6 +21,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+
+
         val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
         val editor = prefs.edit()
 
