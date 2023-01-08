@@ -4,72 +4,63 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.newsswipe.models.News
 
 class DatabaseBookmarks(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
         override fun onCreate(db: SQLiteDatabase) {
-            val createKeywordsTable = "CREATE TABLE $TABLE_KEYWORDS($COLUMN_ID INTEGER PRIMARY KEY,$COLUMN_KEYWORD TEXT,$COLUMN_USER TEXT)"
+            val createKeywordsTable = "CREATE TABLE $TABLE_BOOKMARKS($COLUMN_ID INTEGER PRIMARY KEY,$COLUMN_USER TEXT,$COLUMN_NEWS_TITLE TEXT,$COLUMN_NEWS_IMAGE TEXT, $COLUMN_NEWS_URL TEXT)"
             db.execSQL(createKeywordsTable)
         }
 
         override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-            db.execSQL("DROP TABLE IF EXISTS $TABLE_KEYWORDS")
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_BOOKMARKS")
             onCreate(db)
         }
 
-        fun listKeywords(): MutableList<String> {
-            val sql = "select * from $TABLE_KEYWORDS"
-            val db = this.readableDatabase
-            val storeKeywords = arrayListOf<String>()
-            val cursor = db.rawQuery(sql, null)
-            if (cursor.moveToFirst()) {
-                do {
-                    val keyword = cursor.getString(0)
-                    val user = cursor.getString(2)
-                    storeKeywords.add(keyword)
-                    storeKeywords.add(user)
-                } while (cursor.moveToNext())
-            }
-            cursor.close()
-            return storeKeywords
-        }
 
-        fun addKeyword(keyword: String, user: String): Long {
+        fun addBookmark(user: String, title: String, image: String, url: String): Long {
             val values = ContentValues()
-            values.put(COLUMN_KEYWORD, keyword)
             values.put(COLUMN_USER, user)
+            values.put(COLUMN_NEWS_TITLE, title)
+            values.put(COLUMN_NEWS_IMAGE, image)
+            values.put(COLUMN_NEWS_URL, url)
             val db = this.writableDatabase
-            return db.insert(TABLE_KEYWORDS, null, values)
+            return db.insert(TABLE_BOOKMARKS, null, values)
         }
 
-        fun deleteKeyword(keyword: String,user: String): Int {
+        fun deleteBookmark(url: String,user: String): Int {
             val db = this.writableDatabase
-            return db.delete(TABLE_KEYWORDS, "$COLUMN_KEYWORD = '$keyword' AND $COLUMN_USER = '$user'",null)
+            return db.delete(TABLE_BOOKMARKS, "$COLUMN_NEWS_URL = '$url' AND $COLUMN_USER = '$user'",null)
         }
 
         companion object {
             private const val DATABASE_VERSION = 5
-            private const val DATABASE_NAME = "usersKeywords"
-            private const val TABLE_KEYWORDS = "keywords"
+            private const val DATABASE_NAME = "usersBookmarks"
+            private const val TABLE_BOOKMARKS = "bookmarks"
 
             private const val COLUMN_ID = "_id"
-            private const val COLUMN_KEYWORD = "keyword"
             private const val COLUMN_USER = "user"
+            private const val COLUMN_NEWS_TITLE = "title"
+            private const val COLUMN_NEWS_IMAGE = "image"
+            private const val COLUMN_NEWS_URL = "url"
         }
 
-        fun findKeywords(user: String): MutableList<String> {
-            val sql = "select * from $TABLE_KEYWORDS where user = '$user'"
+        fun findBookmarks(user: String): MutableList<News> {
+            val sql = "select * from $TABLE_BOOKMARKS where user = '$user'"
             val db = this.readableDatabase
-            val storeKeywords = arrayListOf<String>()
+            val storeBookmarks = arrayListOf<News>()
             val cursor = db.rawQuery(sql, null)
             if (cursor.moveToFirst()) {
                 do {
-                    val keyword = cursor.getString(1)
-                    storeKeywords.add(keyword)
+                    val title = cursor.getString(2)
+                    val image = cursor.getString(3)
+                    val url = cursor.getString(4)
+                    storeBookmarks.add(News(title,"null",url,"null",image))
                 } while (cursor.moveToNext())
             }
             cursor.close()
-            return storeKeywords
+            return storeBookmarks
         }
     }

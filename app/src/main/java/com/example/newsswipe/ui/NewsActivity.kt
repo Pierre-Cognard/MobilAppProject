@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newsswipe.R
+import com.example.newsswipe.database.DatabaseBookmarks
 import com.example.newsswipe.database.DatabaseKeywords
 import com.example.newsswipe.models.News
 import com.example.newsswipe.ui.adapter.NewsAdapter
@@ -26,8 +27,10 @@ import org.json.JSONObject
 class NewsActivity : AppCompatActivity(), CardStackListener {
 
     private var mAuth = FirebaseAuth.getInstance()
-    private val mDatabase = DatabaseKeywords(this)
+    private val databaseKeywords = DatabaseKeywords(this)
+    private val databaseBookmarks = DatabaseBookmarks(this)
     private val user = if(mAuth.currentUser != null){mAuth.currentUser?.email.toString()} else{"guest"}
+    lateinit var currentNews: News
 
     private lateinit var articles : MutableList<News>
 
@@ -43,7 +46,7 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
         val cardStackView = findViewById<CardStackView>(R.id.card_stack_view)
         val manager = CardStackLayoutManager(this,this)
 
-        val keywordsList : MutableList<String> = mDatabase.findKeywords(user)
+        val keywordsList : MutableList<String> = databaseKeywords.findKeywords(user)
         articles = newsAPI(keywordsList)
         //val articles : MutableList<News> = newsAPI(keywordsList)
 
@@ -91,7 +94,7 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
             val language = prefs.getString("News_language",null)
             for (word in keywordsList) {
                 val request = Ion.with(this)
-                    .load("https://newsapi.org/v2/everything?apiKey=7d127856d20d4cfd830aca5f42dfa305&pageSize=5&language=$language&q=$word")
+                    .load("https://newsdata.io/api/1/news?apikey=pub_9348f82517fd2daa328046260e91032902a4&q=$word&language=$language")
                     .setHeader("Accept", "application/json")
                     .setHeader("User-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
                     .asString()
@@ -99,24 +102,34 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
                     .get()
 
                 val myJSON = JSONObject(request.result.toString())
-                val status = myJSON.getString("status")
-                Log.d("API", "status = $status")
+                //val status = myJSON.getString("status")
+                Log.d("API", myJSON.toString())
 
-                val listArticles = myJSON.getString("articles")
 
+                val listArticles = myJSON.getString("results")
+                Log.d("API", listArticles.length.toString())
                 val myJSONArticles = JSONArray(listArticles)
 
-                for (i in 0 until myJSONArticles.length()) {
+                val nb: Int = if (myJSONArticles.length() > 5) 5
+                else myJSONArticles.length()
+
+
+                Log.d("API", myJSONArticles.length().toString())
+                for (i in 0 until nb) {
                     //Log.d("API",i.toString())
                     val row = JSONObject(myJSONArticles.getJSONObject(i).toString())
                     val title = row.getString("title")
-                    val author = row.getString("author")
-                    val url = row.getString("url")
-                    val image = row.getString("urlToImage")
-                    val date = row.getString("publishedAt")
+                    val author = row.getString("source_id")
+                    val url = row.getString("link")
+                    var image = row.getString("image_url")
+                    val date = row.getString("pubDate")
                     //Log.d("API", "title = $title, author = $author, url = $url, image = $image, date = $date")
+
+                    if (image == "null") image = getString(R.string.link_logo)
+
                     val n = News(title, author, url, date, image)
                     listNews.add(n)
+                    Log.d("API", n.toString())
                 }
             }
         }
@@ -146,7 +159,8 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
         Log.d("CardStackView",direction.toString())
 
         if (direction.toString() == "Right"){
-            Log.d("CardStackView","SAVE NEWS")
+            databaseBookmarks.addBookmark(user,currentNews.title,currentNews.image,currentNews.url).toInt()
+            Toast.makeText(this, getString(R.string.keyword_add_success), Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -161,6 +175,11 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
 
     override fun onCardAppeared(view: View, position: Int) {
         setupShareButton(position)
+        setCurrentNews(position)
+    }
+
+    private fun setCurrentNews(position: Int) {
+        currentNews = articles[position]
     }
 
     override fun onCardDisappeared(view: View?, position: Int) {
@@ -193,4 +212,6 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
             }
         }
     }
+
+
 }

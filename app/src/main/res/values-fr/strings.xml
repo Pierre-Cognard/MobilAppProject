@@ -66,4 +66,5 @@
     <string name="share_text">Hey ! Tu dois voir cette actualité :</string>
     <string name="my_bookmarks">Mes Favoris</string>
     <string name="nothing_to_share">Rien à partager</string>
+    <string name="link_logo">https://i.postimg.cc/8zJqXQqy/logo.png</string>
 </resources>

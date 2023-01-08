@@ -7,9 +7,10 @@
     android:id="@+id/card"
     android:layout_width="410dp"
     android:layout_height="550dp"
-    android:background="?attr/selectableItemBackground"
+    android:background="@drawable/fond_login"
     android:clickable="true"
-    android:foreground="?attr/selectableItemBackground"
+    android:foreground="@drawable/border"
+
     app:cardBackgroundColor="@android:color/white"
     app:cardCornerRadius="8dp"
     app:cardPreventCornerOverlap="false"
@@ -19,14 +20,14 @@
     <ImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
-        android:layout_height="380dp"
+        android:layout_height="350dp"
         android:contentDescription="@string/image_description"
         android:scaleType="centerCrop"
         tools:ignore="ImageContrastCheck" />
 
     <LinearLayout
         android:layout_width="380dp"
-        android:layout_height="180dp"
+        android:layout_height="150dp"
         android:layout_gravity="bottom|center"
         android:orientation="vertical">
 

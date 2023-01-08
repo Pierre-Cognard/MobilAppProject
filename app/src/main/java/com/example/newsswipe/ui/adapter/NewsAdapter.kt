@@ -15,8 +15,6 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.example.newsswipe.R
 import com.example.newsswipe.models.News
 import com.squareup.picasso.Picasso
-import java.text.SimpleDateFormat
-import java.util.*
 
 class NewsAdapter(private val newsList: MutableList<News>, private val context: Context) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
@@ -42,11 +40,8 @@ class NewsAdapter(private val newsList: MutableList<News>, private val context: 
         if (newsList[position].author != "null") holder.author.text = newsList[position].author
 
         if (newsList[position].date != "null") {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-            val date = dateFormat.parse(newsList[position].date)
-            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm")
-            val dateStr = date?.let { formatter.format(it) }
-            holder.date.text = dateStr.toString()
+
+            holder.date.text = newsList[position].date
         }
 
 

@@ -66,4 +66,5 @@
     <string name="share_text">"¡Hey! Tienes que ver esta noticia : "</string>
     <string name="my_bookmarks">Mis favoritos</string>
     <string name="nothing_to_share">Nada que compartir</string>
+    <string name="link_logo">https://i.postimg.cc/8zJqXQqy/logo.png</string>
 </resources>

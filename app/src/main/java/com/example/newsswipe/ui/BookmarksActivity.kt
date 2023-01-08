@@ -3,8 +3,10 @@ package com.example.newsswipe.ui
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,11 +14,13 @@ import com.example.newsswipe.R
 import com.example.newsswipe.database.DatabaseBookmarks
 import com.example.newsswipe.models.News
 import com.example.newsswipe.ui.adapter.BookmarksAdapter
+import com.google.firebase.auth.FirebaseAuth
 
 class BookmarksActivity : AppCompatActivity() {
 
-    private val mDatabase = DatabaseBookmarks(this)
-
+    private val databaseBookmarks = DatabaseBookmarks(this)
+    private var mAuth = FirebaseAuth.getInstance()
+    private val user = if(mAuth.currentUser != null){mAuth.currentUser?.email.toString()} else{"guest"}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,17 +28,15 @@ class BookmarksActivity : AppCompatActivity() {
 
         val backButton = findViewById<Button>(R.id.back_button)
 
-        val bookmarksList = mutableListOf<News>()
-        bookmarksList.add(News("title1","author","url","date","image"))
+        val bookmarksList = databaseBookmarks.findBookmarks(user)
+        Log.i("bookmarks", bookmarksList.toString())
 
         val recyclerView = findViewById<View>(R.id.bookmarks_recycler_view) as RecyclerView
-        val mAdapter = BookmarksAdapter(bookmarksList,mDatabase,this)
+        val mAdapter = BookmarksAdapter(bookmarksList,this)
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = mAdapter
 
-        bookmarksList.add(News("title2","author","url","date","image"))
-        bookmarksList.add(News("title3","author","url","date","image"))
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             override fun onMove(
@@ -54,13 +56,16 @@ class BookmarksActivity : AppCompatActivity() {
 
                 // below line is to get the position
                 // of the item at that position.
-                val position = viewHolder.adapterPosition
+
+
+                val check = databaseBookmarks.deleteBookmark(deletedCourse.url,user)
+                if (check == 1) Toast.makeText(applicationContext, getString(R.string.keyword_delete_success), Toast.LENGTH_SHORT).show()
+                else Toast.makeText(applicationContext, getString(R.string.keyword_delete_error), Toast.LENGTH_SHORT).show()
 
                 // this method is called when item is swiped.
                 // below line is to remove item from our array list.
                 bookmarksList.removeAt(viewHolder.adapterPosition)
 
-                // below line is to notify our item is removed from adapter.
                 mAdapter.notifyItemRemoved(viewHolder.adapterPosition)
 
             }
