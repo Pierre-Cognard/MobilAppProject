@@ -7,10 +7,7 @@ data class News(
     var date: String,
     var image: String) {
 
-
     override fun toString(): String {
         return "News(title='$title', author='$author', url='$url', date='$date', image='$image')"
     }
-
-
 }

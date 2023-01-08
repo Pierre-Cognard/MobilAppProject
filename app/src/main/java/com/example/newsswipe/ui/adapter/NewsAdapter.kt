@@ -1,6 +1,5 @@
 package com.example.newsswipe.ui.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -24,29 +23,18 @@ class NewsAdapter(private val newsList: MutableList<News>, private val context: 
         return ViewHolder(inflater.inflate(R.layout.news_item, parent, false))
     }
 
-    @SuppressLint("SimpleDateFormat", "UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-
-
         if (newsList[position].url != "null") {
-            holder.card.setOnClickListener {
+            holder.card.setOnClickListener { // open news when click on the card
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(newsList[position].url))
                 context.startActivity(browserIntent)
             }
         }
+        holder.title.text = newsList[position].title // set news title
+        if (newsList[position].author != "null") holder.author.text = newsList[position].author // set news author
+        if (newsList[position].date != "null") holder.date.text = newsList[position].date // set news publish date
 
-        holder.title.text = newsList[position].title
-
-        if (newsList[position].author != "null") holder.author.text = newsList[position].author
-
-        if (newsList[position].date != "null") {
-
-            holder.date.text = newsList[position].date
-        }
-
-
-        val circularProgressDrawable = CircularProgressDrawable(context)
+        val circularProgressDrawable = CircularProgressDrawable(context) // create loading animation
         circularProgressDrawable.apply {
             strokeWidth = 10f
             centerRadius = 100f
@@ -57,8 +45,7 @@ class NewsAdapter(private val newsList: MutableList<News>, private val context: 
         }
 
         val url = if (newsList[position].image.startsWith("https://"))newsList[position].image
-        else URLDecoder.decode(newsList[position].image,"UTF-8")
-
+        else URLDecoder.decode(newsList[position].image,"UTF-8") // decode url if needed
         Picasso
             .get()
             .load(url)
@@ -72,17 +59,13 @@ class NewsAdapter(private val newsList: MutableList<News>, private val context: 
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
-
         var title = view.findViewById(R.id.title) as TextView
         var author = view.findViewById(R.id.author) as TextView
         var date = view.findViewById(R.id.date) as TextView
         var image = view.findViewById(R.id.image) as ImageView
         var card = view.findViewById(R.id.card) as CardView
 
-        //var shareButton: FloatingActionButton = view.findViewById(R.id.share_button)
-
         override fun onClick(v: View?) {
-
         }
     }
 }

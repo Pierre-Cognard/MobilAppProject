@@ -18,23 +18,6 @@ class DatabaseKeywords(context: Context) :
             onCreate(db)
         }
 
-        fun listKeywords(): MutableList<String> {
-            val sql = "select * from $TABLE_KEYWORDS"
-            val db = this.readableDatabase
-            val storeKeywords = arrayListOf<String>()
-            val cursor = db.rawQuery(sql, null)
-            if (cursor.moveToFirst()) {
-                do {
-                    val keyword = cursor.getString(0)
-                    val user = cursor.getString(2)
-                    storeKeywords.add(keyword)
-                    storeKeywords.add(user)
-                } while (cursor.moveToNext())
-            }
-            cursor.close()
-            return storeKeywords
-        }
-
         fun addKeyword(keyword: String, user: String): Long {
             val values = ContentValues()
             values.put(COLUMN_KEYWORD, keyword)

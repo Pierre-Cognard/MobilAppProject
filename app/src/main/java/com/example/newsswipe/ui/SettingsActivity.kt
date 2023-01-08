@@ -32,40 +32,36 @@ class SettingsActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
         val listLanguage: Array<String> =  resources.getStringArray(R.array.languages)
-
-        val keywordsList : MutableList<String> = mDatabase.listKeywords()
-
         val appLanguageButton = findViewById<ImageView>(R.id.app_language_button)
         val appLanguageText = findViewById<TextView>(R.id.current_app_language)
-
         val newsLanguageButton = findViewById<ImageView>(R.id.news_language_button)
         val newsLanguageText = findViewById<TextView>(R.id.current_news_language)
-
         val addKeywordButton = findViewById<Button>(R.id.add_keyword_button)
         val backButton = findViewById<Button>(R.id.back_button)
         val keywordInput = findViewById<TextView>(R.id.keyword_input)
 
+        val keywordsList = mutableListOf<String>() // initialize keyword list
         val recyclerView = findViewById<View>(R.id.keyword_recycler_view) as RecyclerView
         val mAdapter = KeywordAdapter(keywordsList,mDatabase,this)
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = mAdapter
 
-        addKeywordButton.setOnClickListener {
-            if (keywordInput.text.toString() == "") Toast.makeText(this, getString(R.string.error_empty_keyword), Toast.LENGTH_SHORT).show() // test if the TextView is empty
+        addKeywordButton.setOnClickListener { // binding add button
+            if (keywordInput.text.toString().isBlank()) Toast.makeText(this, getString(R.string.error_empty_keyword), Toast.LENGTH_SHORT).show() // test if the keywordInput is empty
             else if (keywordsList.contains(keywordInput.text.toString())) Toast.makeText(this, getString(R.string.error_keyword_already_exist), Toast.LENGTH_SHORT).show() // test if the keyword already exists
             else mAdapter.addKeyword(keywordInput.text.toString())
             keywordInput.text = ""
             hideKeyboard()
         }
 
-        backButton.setOnClickListener {
+        backButton.setOnClickListener { // binding back button
             val intent = Intent(this, NewsActivity::class.java)
             startActivity(intent)
         }
 
         var appChecked = 0
-        when(prefs.getString("App_language",null)){
+        when(prefs.getString("App_language",null)){ // set checked value for news language
             "en" -> appChecked = 0
             "fr" -> appChecked = 1
             "es" -> appChecked = 2
@@ -76,7 +72,6 @@ class SettingsActivity : AppCompatActivity() {
             Log.i("Settings", "App Language")
             val mBuilder = AlertDialog.Builder(this)
             mBuilder.setTitle("Choose App Language")
-            //val checked =
             mBuilder.setSingleChoiceItems(R.array.languages, appChecked) { dialog, language ->
                 when(language){
                     0 -> setAppLanguage("en")
@@ -98,12 +93,11 @@ class SettingsActivity : AppCompatActivity() {
         newsLanguageButton.setOnClickListener {
 
             var newsChecked = 0
-            when(prefs.getString("News_language",null)){
+            when(prefs.getString("News_language",null)){ // set checked value for news language
                 "en" -> newsChecked = 0
                 "fr" -> newsChecked = 1
                 "es" -> newsChecked = 2
             }
-            Log.i("Settings", "News Language")
             val mBuilder = AlertDialog.Builder(this)
             mBuilder.setTitle("Choose News Language")
             mBuilder.setSingleChoiceItems(listLanguage, newsChecked) { dialog, language ->
@@ -117,7 +111,6 @@ class SettingsActivity : AppCompatActivity() {
             val mDialog = mBuilder.create()
             mDialog.show()
         }
-        keywordsList.clear()
         for (elem in mDatabase.findKeywords(user)) keywordsList.add(0,elem)
         mAdapter.notifyDataSetChanged()
     }
