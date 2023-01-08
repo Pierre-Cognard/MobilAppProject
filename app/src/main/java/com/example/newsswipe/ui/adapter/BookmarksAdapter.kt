@@ -13,25 +13,20 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.example.newsswipe.R
 import com.example.newsswipe.models.News
-import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 
 class BookmarksAdapter(private val list: MutableList<News>, private val context: Context) : RecyclerView.Adapter<BookmarksAdapter.ViewHolder>() {
 
-    private val mAuth = FirebaseAuth.getInstance()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val v = inflater.inflate(R.layout.news_layout_bookmark, parent, false)
-
         return ViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.text = list[position].title
+        holder.title.text = list[position].title // set title news
 
-
-        val circularProgressDrawable = CircularProgressDrawable(context)
+        val circularProgressDrawable = CircularProgressDrawable(context) // create loading animation
         circularProgressDrawable.apply {
             strokeWidth = 10f
             centerRadius = 100f
@@ -47,7 +42,7 @@ class BookmarksAdapter(private val list: MutableList<News>, private val context:
             .error(R.drawable.error)
             .into(holder.image)
 
-        holder.card.setOnClickListener{
+        holder.card.setOnClickListener{ // binding card to open news on click
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(list[position].url))
             context.startActivity(browserIntent)
         }
@@ -62,9 +57,7 @@ class BookmarksAdapter(private val list: MutableList<News>, private val context:
         var title = view.findViewById(R.id.title) as TextView
         var image = view.findViewById(R.id.image) as ImageView
         var card = view.findViewById(R.id.card) as CardView
-
         override fun onClick(v: View?) {
-
         }
     }
 }

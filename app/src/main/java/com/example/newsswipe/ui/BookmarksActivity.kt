@@ -3,7 +3,6 @@ package com.example.newsswipe.ui
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -30,19 +29,14 @@ class BookmarksActivity : AppCompatActivity() {
         val backButton = findViewById<Button>(R.id.back_button)
         val noBookmarks = findViewById<TextView>(R.id.no_bookmarks)
 
-        val bookmarksList = databaseBookmarks.findBookmarks(user)
-
-        if (bookmarksList.isEmpty()){
-            noBookmarks.visibility = View.VISIBLE
-        }
-        Log.i("bookmarks", bookmarksList.toString())
-
+        val bookmarksList = databaseBookmarks.findBookmarks(user) // setup bookmarks list for recyclerview
         val recyclerView = findViewById<View>(R.id.bookmarks_recycler_view) as RecyclerView
         val mAdapter = BookmarksAdapter(bookmarksList,this)
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = mAdapter
 
+        if (bookmarksList.isEmpty())noBookmarks.visibility = View.VISIBLE // if no bookmarks, display text
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             override fun onMove(
@@ -50,40 +44,23 @@ class BookmarksActivity : AppCompatActivity() {
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                // this method is called
-                // when the item is moved.
                 return false
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                // this method is called when we swipe our item to right direction.
-                // on below line we are getting the item at a particular position.
-                val deletedCourse: News = bookmarksList[viewHolder.adapterPosition]
-
-                // below line is to get the position
-                // of the item at that position.
-
-
-                val check = databaseBookmarks.deleteBookmark(deletedCourse.url,user)
+                val deletedNews: News = bookmarksList[viewHolder.adapterPosition] // get deleted news
+                val check = databaseBookmarks.deleteBookmark(deletedNews.url,user) // delete bookmark from database
                 if (check == 1) Toast.makeText(applicationContext, getString(R.string.bookmark_delete_success), Toast.LENGTH_SHORT).show()
                 else Toast.makeText(applicationContext, getString(R.string.bookmark_delete_error), Toast.LENGTH_SHORT).show()
 
-                // this method is called when item is swiped.
-                // below line is to remove item from our array list.
-                bookmarksList.removeAt(viewHolder.adapterPosition)
-
-                mAdapter.notifyItemRemoved(viewHolder.adapterPosition)
-
+                bookmarksList.removeAt(viewHolder.adapterPosition) // delete bookmark from list
+                mAdapter.notifyItemRemoved(viewHolder.adapterPosition) // notify adapter
             }
-            // at last we are adding this
-            // to our recycler view.
         }).attachToRecyclerView(recyclerView)
 
-
-        backButton.setOnClickListener{
+        backButton.setOnClickListener{ // binding back button
             val intent = Intent(this, NewsActivity::class.java)
             startActivity(intent)
         }
-
     }
 }

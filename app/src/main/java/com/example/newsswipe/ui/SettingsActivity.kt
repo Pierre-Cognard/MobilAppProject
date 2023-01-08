@@ -133,7 +133,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setAppLanguage(language: String){ //function to change application language
         val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
-        prefs.edit().putString("App_language",language).apply()
+        prefs.edit().putString("App_language",language).apply() // save app language
 
         val local = Locale(language)
         Locale.setDefault(local)
@@ -141,16 +141,15 @@ class SettingsActivity : AppCompatActivity() {
         val conf = Configuration()
         conf.setLocale(local)
         res.updateConfiguration(conf,res.displayMetrics)
-        startActivity(Intent(this,SettingsActivity::class.java))
+        startActivity(Intent(this,SettingsActivity::class.java)) // refresh to apply the language
     }
 
-    private fun setNewsLanguage(language: String, position: Int){
+    private fun setNewsLanguage(language: String, position: Int){ // function to change news language
         val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
-        prefs.edit().putString("News_language",language).apply()
+        prefs.edit().putString("News_language",language).apply() // save news language
 
-        val listLanguage: Array<String> =  resources.getStringArray(R.array.languages)
+        val listLanguage: Array<String> = resources.getStringArray(R.array.languages)
         val newsLanguageText = findViewById<TextView>(R.id.current_news_language)
-        newsLanguageText.text = listLanguage[position]
+        newsLanguageText.text = listLanguage[position] // display current news language
     }
-
 }

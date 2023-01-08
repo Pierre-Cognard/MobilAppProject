@@ -31,7 +31,6 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
     private val databaseBookmarks = DatabaseBookmarks(this)
     private val user = if(mAuth.currentUser != null){mAuth.currentUser?.email.toString()} else{"guest"}
     private lateinit var currentNews: News
-
     private lateinit var articles : MutableList<News>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,21 +41,8 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
         val logoutButton = findViewById<Button>(R.id.logout_button)
         val bookmarksButton = findViewById<Button>(R.id.bookmarks_button)
         val username = findViewById<TextView>(R.id.username)
-
         val cardStackView = findViewById<CardStackView>(R.id.card_stack_view)
         val manager = CardStackLayoutManager(this,this)
-
-        val keywordsList : MutableList<String> = databaseKeywords.findKeywords(user)
-        articles = newsAPI(keywordsList)
-        //val articles : MutableList<News> = newsAPI(keywordsList)
-
-        Log.i("Settings", articles.toString())
-        val mAdapter = NewsAdapter(articles,this)
-
-        cardStackView.layoutManager = manager
-        cardStackView.adapter = mAdapter
-
-        init(manager,keywordsList)
 
         if (mAuth.currentUser != null) username.text = mAuth.currentUser?.email
         else{
@@ -64,72 +50,67 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
             username.text = getString(R.string.guest)
         }
 
-        logoutButton.setOnClickListener {
+        val keywordsList : MutableList<String> = databaseKeywords.findKeywords(user)
+        articles = newsAPI(keywordsList) // setup news list for recyclerview
+        val mAdapter = NewsAdapter(articles,this)
+        cardStackView.layoutManager = manager
+        cardStackView.adapter = mAdapter
+        init(manager,keywordsList)
+
+        logoutButton.setOnClickListener { // binding log out button
             FirebaseAuth.getInstance().signOut()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
-        settingsButton.setOnClickListener {
-            //Log.i("Settings", "settings")
+        settingsButton.setOnClickListener { // binding settings button
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
 
-        bookmarksButton.setOnClickListener {
+        bookmarksButton.setOnClickListener { // binding bookmarks button
             val intent = Intent(this, BookmarksActivity::class.java)
             startActivity(intent)
         }
-
     }
 
     private fun newsAPI(keywordsList: MutableList<String>): MutableList<News> {
         val listNews = mutableListOf<News>()
-        if (keywordsList.isEmpty()){
+        if (keywordsList.isEmpty()){ // if the user has no keyword
             Log.d("API", "pas de keyword")
             listNews.add(News(getString(R.string.no_keywords),"null","null","null","https://i.postimg.cc/8zJqXQqy/logo.png"))
         }
         else {
             val prefs = getSharedPreferences("Language", Context.MODE_PRIVATE)
-            val language = prefs.getString("News_language",null)
+            val language = prefs.getString("News_language",null) // get news language
             for (word in keywordsList) {
                 val request = Ion.with(this)
-                    .load("https://newsdata.io/api/1/news?apikey=pub_9348f82517fd2daa328046260e91032902a4&q=$word&language=$language")
+                    .load("https://newsdata.io/api/1/news?apikey=pub_15395e81b342a68279889bacbc62c91742b75&q=$word&language=$language")
                     .setHeader("Accept", "application/json")
                     .setHeader("User-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
                     .asString()
                     .withResponse()
                     .get()
 
+                // fetch API result
                 val myJSON = JSONObject(request.result.toString())
-                //val status = myJSON.getString("status")
-                Log.d("API", myJSON.toString())
-
-
                 val listArticles = myJSON.getString("results")
-                Log.d("API", listArticles.length.toString())
                 val myJSONArticles = JSONArray(listArticles)
 
-                val nb: Int = if (myJSONArticles.length() > 5) 5
+                val nb: Int = if (myJSONArticles.length() > 5) 5 // set 5 news max per keyword
                 else myJSONArticles.length()
 
-
-                Log.d("API", myJSONArticles.length().toString())
                 for (i in 0 until nb) {
-                    //Log.d("API",i.toString())
                     val row = JSONObject(myJSONArticles.getJSONObject(i).toString())
                     val title = row.getString("title")
                     val author = row.getString("source_id")
                     val url = row.getString("link")
                     var image = row.getString("image_url")
                     val date = row.getString("pubDate")
-                    Log.d("API", "title = $title, author = $author, url = $url, image = $image, date = $date")
+                    //Log.d("API", "title = $title, author = $author, url = $url, image = $image, date = $date")
+                    if (image == "null") image = getString(R.string.link_logo) // if no image, give app logo
 
-                    if (image == "null") image = getString(R.string.link_logo)
-
-                    val n = News(title, author, url, date, image)
-                    listNews.add(n)
-                    //Log.d("API", n.toString())
+                    listNews.add(News(title, author, url, date, image))
                 }
             }
         }
@@ -138,17 +119,17 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
 
     private fun init(manager: CardStackLayoutManager,keywordsList: MutableList<String>) {
         manager.setVisibleCount(3)
-        manager.setTranslationInterval(8f)
+        manager.setTranslationInterval(12f)
         manager.setScaleInterval(0.95f)
         manager.setSwipeThreshold(0.4f)
         manager.setMaxDegree(30.0f)
         manager.setDirections(Direction.HORIZONTAL)
         manager.setCanScrollHorizontal(true)
         manager.setCanScrollVertical(false)
-        manager.setStackFrom(StackFrom.Top)
+        manager.setStackFrom(StackFrom.Bottom)
         manager.setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
         manager.setOverlayInterpolator(LinearInterpolator())
-        if (keywordsList.isEmpty()) manager.setCanScrollHorizontal(false) //No swipe
+        if (keywordsList.isEmpty()) manager.setCanScrollHorizontal(false) // Disable swipe if no keywords
     }
 
     override fun onCardDragging(direction: Direction, ratio: Float) {
@@ -156,10 +137,8 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
     }
 
     override fun onCardSwiped(direction: Direction?) {
-        Log.d("CardStackView",direction.toString())
-
         if (direction.toString() == "Right"){
-            databaseBookmarks.addBookmark(user,currentNews.title,currentNews.image,currentNews.url).toInt()
+            databaseBookmarks.addBookmark(user,currentNews.title,currentNews.image,currentNews.url).toInt() // add bookmark
             Toast.makeText(this, getString(R.string.bookmark_add_success), Toast.LENGTH_SHORT).show()
         }
     }
@@ -172,37 +151,28 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
         Log.d("CardStackView","card canceled")
     }
 
-    override fun onCardAppeared(view: View, position: Int) {
+    override fun onCardAppeared(view: View, position: Int) { // when a card appear
         setupShareButton(position)
         setCurrentNews(position)
     }
 
-    private fun setCurrentNews(position: Int) {
+    private fun setCurrentNews(position: Int) { // function to update currentNews with the information of the displayed news
         currentNews = articles[position]
     }
 
-    override fun onCardDisappeared(view: View?, position: Int) {
-        Log.d("CardStackView","card disappear $position")
-
-        if (position == articles.lastIndex){
-            setupShareButton(-1)
-        }
-
+    override fun onCardDisappeared(view: View?, position: Int) { // when a card disappear
+        if (position == articles.lastIndex) setupShareButton(-1) // if no more news, unbind the share button
     }
 
-    private fun setupShareButton(position: Int){
+    private fun setupShareButton(position: Int){ // function to bind share button with the link of the current news
         val shareButton = findViewById<FloatingActionButton>(R.id.share_button)
-
         if (position != -1 && articles[position].url != "null") {
             shareButton.setOnClickListener {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.putExtra(Intent.EXTRA_TITLE, articles[position].title)
-                intent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    getString(R.string.share_text).plus(articles[position].url)
-                )
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text).plus(articles[position].url))
                 intent.type = "text/plain"
-                startActivity(Intent.createChooser(intent, "test"))
+                startActivity(Intent.createChooser(intent, articles[position].title))
             }
         }
         else{
