@@ -28,20 +28,17 @@
             android:textColor="@color/black"
             android:textSize="20sp" />
 
-        <ImageView
-            android:id="@+id/notification"
-            android:layout_width="wrap_content"
+
+        <ToggleButton
+            android:id="@+id/toggleButton2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:clickable="true"
-            android:contentDescription="@string/notification_description"
-            android:focusable="true"
-            android:minWidth="32dp"
-            android:minHeight="32dp"
-            app:srcCompat="@drawable/ic_notification"
-            tools:ignore="TouchTargetSizeCheck" />
+            android:layout_weight="1"
+            android:textOff="@string/off"
+            android:textOn="@string/on"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue_button_dark"
+            android:drawableStart="@drawable/ic_notification"/>
 
         <ImageView
             android:id="@+id/delete"
@@ -58,6 +55,9 @@
             android:minHeight="32dp"
             app:srcCompat="@drawable/ic_delete"
             tools:ignore="TouchTargetSizeCheck" />
+
+
+
 
     </LinearLayout>
 

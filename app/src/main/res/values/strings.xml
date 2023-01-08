@@ -33,6 +33,8 @@
     <string name="news_language">News language</string>
     <string name="add_keyword">Add keyword</string>
     <string name="back_button">Back</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 
     <string name="error_empty_keyword">Error, you have to write a keyword before !</string>
     <string name="error_keyword_already_exist">This keyword is already in the list !</string>
@@ -52,12 +54,18 @@
         <item>Spanish</item>
     </string-array>
 
+
+
     <string name="share_text">Hey! You have to see this news : </string>
     <string name="nothing_to_share">Nothing to share</string>
 
 
     <!-- Bookmarks Activity -->
     <string name="my_bookmarks">My bookmarks</string>
+    <string name="no_bookmarks">You have no bookmarks, swipe news to the right to add a bookmark.</string>
+    <string name="bookmark_add_success">Bookmark added successfully</string>
+    <string name="bookmark_delete_success">Bookmark successfully deleted</string>
+    <string name="bookmark_delete_error">Error while deleting bookmark</string>
 
 
     <!-- Strings used for fragments for navigation -->
@@ -70,6 +78,5 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="selected_item" />
     <string name="link_logo">https://i.postimg.cc/8zJqXQqy/logo.png</string>
 </resources>

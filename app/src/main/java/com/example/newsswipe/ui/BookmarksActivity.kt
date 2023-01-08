@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,8 +28,13 @@ class BookmarksActivity : AppCompatActivity() {
         setContentView(R.layout.activity_bookmarks)
 
         val backButton = findViewById<Button>(R.id.back_button)
+        val noBookmarks = findViewById<TextView>(R.id.no_bookmarks)
 
         val bookmarksList = databaseBookmarks.findBookmarks(user)
+
+        if (bookmarksList.isEmpty()){
+            noBookmarks.visibility = View.VISIBLE
+        }
         Log.i("bookmarks", bookmarksList.toString())
 
         val recyclerView = findViewById<View>(R.id.bookmarks_recycler_view) as RecyclerView
@@ -59,8 +65,8 @@ class BookmarksActivity : AppCompatActivity() {
 
 
                 val check = databaseBookmarks.deleteBookmark(deletedCourse.url,user)
-                if (check == 1) Toast.makeText(applicationContext, getString(R.string.keyword_delete_success), Toast.LENGTH_SHORT).show()
-                else Toast.makeText(applicationContext, getString(R.string.keyword_delete_error), Toast.LENGTH_SHORT).show()
+                if (check == 1) Toast.makeText(applicationContext, getString(R.string.bookmark_delete_success), Toast.LENGTH_SHORT).show()
+                else Toast.makeText(applicationContext, getString(R.string.bookmark_delete_error), Toast.LENGTH_SHORT).show()
 
                 // this method is called when item is swiped.
                 // below line is to remove item from our array list.

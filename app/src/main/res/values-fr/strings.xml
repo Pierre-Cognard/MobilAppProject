@@ -62,9 +62,14 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="selected_item" />
     <string name="share_text">Hey ! Tu dois voir cette actualité :</string>
     <string name="my_bookmarks">Mes Favoris</string>
     <string name="nothing_to_share">Rien à partager</string>
     <string name="link_logo">https://i.postimg.cc/8zJqXQqy/logo.png</string>
+    <string name="bookmark_add_success">Favoris ajouté avec succes</string>
+    <string name="bookmark_delete_success">Favoris supprimé avec succes</string>
+    <string name="bookmark_delete_error">Erreur lors de la suppression du favoris</string>
+    <string name="no_bookmarks">Vous n\'avez pas de favoris, faites glisser les articles à droite pour en ajouter.</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 </resources>

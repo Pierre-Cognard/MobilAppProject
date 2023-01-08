@@ -30,7 +30,7 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
     private val databaseKeywords = DatabaseKeywords(this)
     private val databaseBookmarks = DatabaseBookmarks(this)
     private val user = if(mAuth.currentUser != null){mAuth.currentUser?.email.toString()} else{"guest"}
-    lateinit var currentNews: News
+    private lateinit var currentNews: News
 
     private lateinit var articles : MutableList<News>
 
@@ -123,13 +123,13 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
                     val url = row.getString("link")
                     var image = row.getString("image_url")
                     val date = row.getString("pubDate")
-                    //Log.d("API", "title = $title, author = $author, url = $url, image = $image, date = $date")
+                    Log.d("API", "title = $title, author = $author, url = $url, image = $image, date = $date")
 
                     if (image == "null") image = getString(R.string.link_logo)
 
                     val n = News(title, author, url, date, image)
                     listNews.add(n)
-                    Log.d("API", n.toString())
+                    //Log.d("API", n.toString())
                 }
             }
         }
@@ -160,9 +160,8 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
 
         if (direction.toString() == "Right"){
             databaseBookmarks.addBookmark(user,currentNews.title,currentNews.image,currentNews.url).toInt()
-            Toast.makeText(this, getString(R.string.keyword_add_success), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.bookmark_add_success), Toast.LENGTH_SHORT).show()
         }
-
     }
 
     override fun onCardRewound() {
@@ -212,6 +211,4 @@ class NewsActivity : AppCompatActivity(), CardStackListener {
             }
         }
     }
-
-
 }

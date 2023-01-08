@@ -15,6 +15,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.example.newsswipe.R
 import com.example.newsswipe.models.News
 import com.squareup.picasso.Picasso
+import java.net.URLDecoder
 
 class NewsAdapter(private val newsList: MutableList<News>, private val context: Context) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
@@ -54,9 +55,13 @@ class NewsAdapter(private val newsList: MutableList<News>, private val context: 
             )
             start()
         }
+
+        val url = if (newsList[position].image.startsWith("https://"))newsList[position].image
+        else URLDecoder.decode(newsList[position].image,"UTF-8")
+
         Picasso
             .get()
-            .load(newsList[position].image)
+            .load(url)
             .placeholder(circularProgressDrawable)
             .error(R.drawable.error)
             .into(holder.image)
